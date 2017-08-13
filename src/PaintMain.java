@@ -17,8 +17,8 @@ public class PaintMain extends JFrame {
 	private JPanel contentPane;
 	// public JPanel panel_2;
 
-	public static Color color;
-	public static String name;
+	public static Color color=null;
+	public static String name=null;
 	public JRadioButton rdbtnBlack;
 	public JRadioButton rdbtnBlue;
 	public JRadioButton rdbtnGreen;
@@ -52,13 +52,13 @@ public class PaintMain extends JFrame {
 		
 	
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 533, 354);
+		setBounds(100, 100, 533, 415);
 		contentPane = new JPanel();
 		setContentPane(contentPane);
 
 		contentPane.setLayout(null);
 		PanelPaint panelpaint = new PanelPaint(userloginn);
-		panelpaint.setBounds(10, 11, 374, 293);
+		panelpaint.setBounds(10, 11, 374, 354);
 		panelpaint.setBackground(Color.WHITE);
 		contentPane.add(panelpaint);
 
@@ -123,6 +123,10 @@ public class PaintMain extends JFrame {
 		});
 		btnsave.setBounds(394, 250, 113, 23);
 		contentPane.add(btnsave);
+		
+		JButton btnselect = new JButton("Select");
+		btnselect.setBounds(394, 284, 113, 23);
+		contentPane.add(btnselect);
 		class VoteActionListener implements ActionListener {
 			public void actionPerformed(ActionEvent ex) {
 				String choice = bG.getSelection().getActionCommand();
