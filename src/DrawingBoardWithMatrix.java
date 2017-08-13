@@ -25,7 +25,7 @@ public class DrawingBoardWithMatrix extends JFrame {
   public static void main(String[] args) {
     new DrawingBoardWithMatrix();
   }
-
+//for test example
   public DrawingBoardWithMatrix() {
     this.setSize(300, 300);
   // this.setLayout(null);
