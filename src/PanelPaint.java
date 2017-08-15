@@ -49,6 +49,10 @@ public class PanelPaint extends JPanel {
 					endDrag = startDrag;
 					repaint();
 				}
+				else
+				{
+					System.out.println("OK");
+				}
 			}
 
 			@Override
