@@ -8,6 +8,7 @@ import javax.swing.JRadioButton;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
+
 public class PaintMain extends JFrame {
 
 	/**
@@ -15,22 +16,20 @@ public class PaintMain extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	// public JPanel panel_2;
 
-	public static Color color=null;
-	public static String name=null;
+	public static Color color = null;
+	public static String name = null;
 	public JRadioButton rdbtnBlack;
 	public JRadioButton rdbtnBlue;
 	public JRadioButton rdbtnGreen;
 	public JRadioButton rdbtnRed;
-	  static User userlogin;
+	static User userlogin;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void enter( User user) {
-	
-	 userlogin=user;
+	public static void enter(User user) {
+		userlogin = user;
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -45,12 +44,11 @@ public class PaintMain extends JFrame {
 
 	/**
 	 * Create the frame.
-	 * @param userloginn 
-	 * @throws SQLException 
+	 * 
+	 * @param userloginn
+	 * @throws SQLException
 	 */
 	public PaintMain(User userloginn) throws SQLException {
-		
-	
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 533, 415);
 		contentPane = new JPanel();
@@ -123,7 +121,7 @@ public class PaintMain extends JFrame {
 		});
 		btnsave.setBounds(394, 250, 113, 23);
 		contentPane.add(btnsave);
-		
+
 		JButton btnselect = new JButton("Select");
 		btnselect.setBounds(394, 284, 113, 23);
 		contentPane.add(btnselect);
@@ -138,7 +136,6 @@ public class PaintMain extends JFrame {
 		rdbtnBlue.addActionListener(al);
 		rdbtnGreen.addActionListener(al);
 		rdbtnRed.addActionListener(al);
-
 	}
 
 	public static Color readColor(String str) {
@@ -155,6 +152,7 @@ public class PaintMain extends JFrame {
 			return Color.CYAN;
 		}
 	}
+
 	public static String writeColor(Color c) {
 		if (c.equals(Color.black))
 			return "Black";
@@ -165,6 +163,5 @@ public class PaintMain extends JFrame {
 		else if (c.equals(Color.green))
 			return "Green";
 		return "Cyan";
-
 	}
 }
