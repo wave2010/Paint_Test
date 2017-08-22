@@ -14,9 +14,8 @@ public class ConnectionManager {
         try {
             Class.forName(driverName);
             try {
-                con = DriverManager.getConnection(url, username, password);
+              con = DriverManager.getConnection(url, username, password);  
             } catch (SQLException ex) {
-                // log an exception. for example:
                 System.out.println("Failed To Create the DataBase Connection."); 
             }
         } catch (ClassNotFoundException ex) {

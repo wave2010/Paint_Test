@@ -16,8 +16,8 @@ public class PaintMain extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-
-	public static Color color = null;
+	UserEntityManager uem = new UserEntityManager();
+	public static Color color = Color.MAGENTA;
 	public static String name = null;
 	public JRadioButton rdbtnBlack;
 	public JRadioButton rdbtnBlue;
@@ -50,13 +50,13 @@ public class PaintMain extends JFrame {
 	 */
 	public PaintMain(User userloginn) throws SQLException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 533, 415);
+		setBounds(100, 100, 594, 478);
 		contentPane = new JPanel();
 		setContentPane(contentPane);
 
 		contentPane.setLayout(null);
 		PanelPaint panelpaint = new PanelPaint(userloginn);
-		panelpaint.setBounds(10, 11, 374, 354);
+		panelpaint.setBounds(10, 11, 436, 418);
 		panelpaint.setBackground(Color.WHITE);
 		contentPane.add(panelpaint);
 
@@ -66,7 +66,7 @@ public class PaintMain extends JFrame {
 				name = btnRectangle.getText();
 			}
 		});
-		btnRectangle.setBounds(394, 11, 113, 23);
+		btnRectangle.setBounds(452, 11, 113, 23);
 		contentPane.add(btnRectangle);
 
 		final JButton btnLine = new JButton("Line");
@@ -75,7 +75,7 @@ public class PaintMain extends JFrame {
 				name = btnLine.getText();
 			}
 		});
-		btnLine.setBounds(394, 45, 113, 23);
+		btnLine.setBounds(452, 45, 113, 23);
 		contentPane.add(btnLine);
 
 		final JButton btnCircle = new JButton("Circle");
@@ -84,26 +84,26 @@ public class PaintMain extends JFrame {
 				name = btnCircle.getText();
 			}
 		});
-		btnCircle.setBounds(394, 79, 113, 23);
+		btnCircle.setBounds(452, 79, 113, 23);
 		contentPane.add(btnCircle);
 
 		rdbtnRed = new JRadioButton("Red", false);
-		rdbtnRed.setBounds(394, 109, 89, 23);
+		rdbtnRed.setBounds(452, 109, 89, 23);
 		rdbtnRed.setActionCommand("Red");
 		contentPane.add(rdbtnRed);
 
 		rdbtnGreen = new JRadioButton("Green", false);
-		rdbtnGreen.setBounds(394, 134, 89, 23);
+		rdbtnGreen.setBounds(452, 134, 89, 23);
 		rdbtnGreen.setActionCommand("Green");
 		contentPane.add(rdbtnGreen);
 
 		rdbtnBlue = new JRadioButton("Blue", false);
-		rdbtnBlue.setBounds(394, 160, 93, 23);
+		rdbtnBlue.setBounds(452, 160, 93, 23);
 		rdbtnBlue.setActionCommand("Blue");
 		contentPane.add(rdbtnBlue);
 
 		rdbtnBlack = new JRadioButton("Black", false);
-		rdbtnBlack.setBounds(394, 186, 93, 23);
+		rdbtnBlack.setBounds(452, 186, 93, 23);
 		rdbtnBlack.setActionCommand("Black");
 		contentPane.add(rdbtnBlack);
 
@@ -119,12 +119,46 @@ public class PaintMain extends JFrame {
 				System.exit(0);
 			}
 		});
-		btnsave.setBounds(394, 250, 113, 23);
+		btnsave.setBounds(452, 406, 113, 23);
 		contentPane.add(btnsave);
 
 		JButton btnselect = new JButton("Select");
-		btnselect.setBounds(394, 284, 113, 23);
+		btnselect.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//color=Color.MAGENTA;
+				name=null;
+			}
+		});
+		btnselect.setBounds(452, 216, 113, 23);
 		contentPane.add(btnselect);
+		
+		JButton btnZoomIn = new JButton("Zoom In");
+		btnZoomIn.setBounds(452, 256, 113, 23);
+		contentPane.add(btnZoomIn);
+		
+		JButton btnZoomOut = new JButton("Zoom Out");
+		btnZoomOut.setBounds(452, 280, 113, 23);
+		contentPane.add(btnZoomOut);
+		
+		JButton btnD = new JButton("Delete All ");
+		btnD.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					uem.deleteShapes();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		btnD.setBounds(452, 353, 113, 23);
+		contentPane.add(btnD);
+		
+		JButton btnDeleteShape = new JButton("Delete Shape");
+		btnDeleteShape.setBounds(452, 327, 113, 23);
+		contentPane.add(btnDeleteShape);
+		
+		
 		class VoteActionListener implements ActionListener {
 			public void actionPerformed(ActionEvent ex) {
 				String choice = bG.getSelection().getActionCommand();

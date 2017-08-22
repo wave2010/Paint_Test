@@ -41,22 +41,23 @@ public class Login extends JFrame {
 	 * Create the frame.
 	 */
 	public Login() {
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 276, 170);
+		setBounds(100, 100, 276, 162);
 		contentPane = new JPanel();
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
 		txtname = new JTextField();
 		txtname.setFont(new Font("Tahoma", Font.BOLD, 13));
-		txtname.setBounds(84, 24, 155, 28);
+		txtname.setBounds(95, 23, 155, 28);
 		contentPane.add(txtname);
 		txtname.setColumns(10);
 
 		txtpassword = new JTextField();
 		txtpassword.setFont(new Font("Tahoma", Font.BOLD, 13));
 		txtpassword.setColumns(10);
-		txtpassword.setBounds(84, 63, 155, 28);
+		txtpassword.setBounds(95, 58, 155, 28);
 		contentPane.add(txtpassword);
 
 		JButton btnButton = new JButton("Login");
@@ -73,15 +74,15 @@ public class Login extends JFrame {
 
 			}
 		});
-		btnButton.setBounds(94, 97, 89, 23);
+		btnButton.setBounds(95, 98, 89, 23);
 		contentPane.add(btnButton);
 
 		JLabel lblUser = new JLabel("Username :");
-		lblUser.setBounds(10, 28, 61, 21);
+		lblUser.setBounds(10, 28, 75, 21);
 		contentPane.add(lblUser);
 
 		JLabel lblPassword = new JLabel("Password :");
-		lblPassword.setBounds(10, 68, 61, 21);
+		lblPassword.setBounds(10, 68, 75, 21);
 		contentPane.add(lblPassword);
 	}
 }

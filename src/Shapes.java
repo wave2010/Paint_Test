@@ -3,10 +3,10 @@ import java.awt.Graphics;
 import java.awt.Point;
 
 public abstract class Shapes {
-	private Point startDrag;
-	private Point endDrag;
-	private Color color;
-	User user;
+	protected Point startDrag;
+	protected Point endDrag;
+	protected Color color;
+	protected User user;
 
 	public Shapes(Point startDrag, Point endDrag, Color color, User user) {
 		this.startDrag = startDrag;
@@ -50,8 +50,4 @@ public abstract class Shapes {
 	public abstract void draw(Graphics g);
 
 	abstract boolean contains(Point point);
-
-	double distance(Point a, Point b) {
-		return Math.sqrt((a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() - b.getY()) * (a.getY() - b.getY()));
-	}
 }

@@ -6,34 +6,29 @@ import java.awt.Point;
 
 public class Circle extends Shapes {
 
-	Point startDrag;
-	Point endDrag;
-	Color color;
+
 	int radius;
 
 	public Circle(Point startDrag, Point endDrag, Color color, User user) {
 		super(startDrag, endDrag, color, user);
-		this.startDrag = startDrag;
-		this.endDrag = endDrag;
-		this.color = color;
-		  int dx = (int) Math.pow ((endDrag.x - startDrag.x), 2);
-	        int dy = (int) Math.pow ((endDrag.y - startDrag.y), 2);
-	        radius = (int) Math.sqrt (dx + dy);
+		int dx = (int) Math.pow((endDrag.x - startDrag.x), 2);
+		int dy = (int) Math.pow((endDrag.y - startDrag.y), 2);
+		radius = (int) Math.sqrt(dx + dy);
 	}
 
 	@Override
 	public void draw(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(color);
-		g2d.drawOval (startDrag.x - radius, startDrag.y - radius, 2 * radius, 2 * radius);
+		g2d.drawOval(startDrag.x - radius, startDrag.y - radius, 2 * radius, 2 * radius);
 	}
 
 	@Override
 	boolean contains(Point p) {
-		 int cx = (int) Math.pow ((p.x - startDrag.x), 2);
-	        int cy = (int) Math.pow ((p.y - startDrag.y), 2);
-	        int d = (int) Math.sqrt (cx + cy);
-	        return (d == radius || d==radius-2 || d==radius-1);
-		
+		int cx = (int) Math.pow((p.x - startDrag.x), 2);
+		int cy = (int) Math.pow((p.y - startDrag.y), 2);
+		int d = (int) Math.sqrt(cx + cy);
+		return (d == radius || d == radius - 2 || d == radius - 1);
+
 	}
 }

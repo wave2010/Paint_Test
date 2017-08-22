@@ -23,57 +23,19 @@ public class PanelPaint extends JPanel {
 	public ArrayList<Shapes> shapes = new ArrayList<>();
 	// boolean result=false;
 	public Point startDrag, endDrag;
-	Shapes shape;
-	User userasli;
-	UserEntityManager uem = new UserEntityManager();
+	private Shapes shape;
+	private User userasli;
+	static UserEntityManager uem = new UserEntityManager();
+
+	public void loadShapeFromDB() throws SQLException {
+		shapes = uem.loadShapes();
+	}
 
 	PanelPaint(User user) throws SQLException {
-		shapes = uem.loadShapes();
-		uem.loadShapes();
+
 		userasli = user;
 		setBounds(10, 11, 374, 293);
-		addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent me) {
-				super.mouseClicked(me);
-				for (Shapes shapes2 : shapes) {
-					
-					if (shapes2 instanceof Rectangle) {
-						
-						boolean result = shapes2.contains(me.getPoint());
-						if (result == true) {
-							shapes2.setColor(PaintMain.color);
-							try {
-								uem.saveShape(shapes2);
-							} catch (SQLException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							repaint();
-							break;
-						}
-						
-					}
-					 if(shapes2 instanceof Circle)
-					{
-						boolean result=shapes2.contains(me.getPoint());
-						if(result==true)
-						{
-							shapes2.setColor(PaintMain.color);
-							try {
-								uem.saveShape(shapes2);
-							} catch (SQLException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-								repaint();
-					}
-					
-				}
-				
-			}
-		});
+		loadShapeFromDB();
 		addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseDragged(MouseEvent e) {
@@ -90,6 +52,54 @@ public class PanelPaint extends JPanel {
 					startDrag = new Point(e.getX(), e.getY());
 					endDrag = startDrag;
 					repaint();
+				} else {
+					for (Shapes shapes2 : shapes) {
+
+						if (shapes2 instanceof Rectangle) {
+
+							boolean result = shapes2.contains(e.getPoint());
+							if (result == true) {
+								shapes2.setColor(PaintMain.color);
+
+								try {
+									uem.updateShape(shapes2);
+									repaint();
+									continue;
+								} catch (SQLException e1) {
+									e1.printStackTrace();
+								}
+
+							}
+						} else if (shapes2 instanceof Circle) {
+							boolean result = shapes2.contains(e.getPoint());
+							if (result == true) {
+								shapes2.setColor(PaintMain.color);
+								try {
+									uem.updateShape(shapes2);
+									repaint();
+									continue;
+								} catch (SQLException ex) {
+									ex.printStackTrace();
+								}
+							}
+
+						} else if (shapes2 instanceof Line) {
+							boolean result = shapes2.contains(e.getPoint());
+							if (result == true) {
+								shapes2.setColor(PaintMain.color);
+								try {
+									uem.updateShape(shapes2);
+									repaint();
+									continue;
+								} catch (SQLException ex) {
+									ex.printStackTrace();
+								}
+
+							}
+
+						}
+					}
+
 				}
 			}
 
@@ -98,23 +108,23 @@ public class PanelPaint extends JPanel {
 				if (PaintMain.name != null && PaintMain.color != null) {
 					if (PaintMain.name == "Line") {
 						shape = new Line(startDrag, endDrag, PaintMain.color, userasli);
-						shapes.add(shape);
 					} else if (PaintMain.name == "Rectangle") {
 						shape = new Rectangle(startDrag, endDrag, PaintMain.color, userasli);
-						shapes.add(shape);
+
 					} else if (PaintMain.name == "Circle") {
 						shape = new Circle(startDrag, endDrag, PaintMain.color, userasli);
-						shapes.add(shape);
 					}
 
 					try {
+						shapes.add(shape);
 						uem.saveShape(shape);
+						startDrag = null;
+						endDrag = null;
+						repaint();
 					} catch (SQLException e1) {
-						System.out.println(e1);
+						e1.printStackTrace();
 					}
-					startDrag = null;
-					endDrag = null;
-					repaint();
+
 				}
 			}
 		});
@@ -123,24 +133,18 @@ public class PanelPaint extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
-		
 		super.paintComponent(g);
-		try {
-			shapes = uem.loadShapes();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		for (Shapes s : shapes)
-			s.draw(g);
 
+			for (Shapes s : shapes)
+				s.draw(g);
+		// PishNamayesh
 		if (startDrag != null && endDrag != null) {
 			g2.setPaint(Color.LIGHT_GRAY);
 			Shape shapejava = null;
 			if (PaintMain.name == "Line") {
 				shapejava = makeLine(startDrag.x, startDrag.y, endDrag.x, endDrag.y);
 			} else if (PaintMain.name == "Circle") {
-				//shapejava = makeOval(startDrag.x, startDrag.y, endDrag.x, endDrag.y);
+				shapejava = makeOval();
 			} else if (PaintMain.name == "Rectangle") {
 				shapejava = makeRectangle(startDrag.x, startDrag.y, endDrag.x, endDrag.y);
 			}
@@ -156,7 +160,16 @@ public class PanelPaint extends JPanel {
 		return new Line2D.Float(x1, y1, x2, y2);
 	}
 
-	private Ellipse2D.Float makeOval(int x1, int y1, int x2, int y2) {
-		return new Ellipse2D.Float(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x1 - x2) * 2, Math.abs(y1 - y2) * 2);
+	private Ellipse2D.Double makeOval() {
+		int cX = (int) Math.pow((endDrag.x - startDrag.x), 2);
+		int cY = (int) Math.pow((endDrag.y - startDrag.y), 2);
+		int radius = (int) Math.sqrt(cX + cY);
+		cX = startDrag.x - radius;
+		cY = startDrag.y - radius;
+		return (new Ellipse2D.Double(cX, cY, 2 * radius, 2 * radius));
+	}
+
+	public static void deleteAlllShape() throws SQLException {
+		uem.deleteShapes();
 	}
 }
