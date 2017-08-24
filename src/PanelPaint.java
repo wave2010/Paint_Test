@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
+import javax.swing.RepaintManager;
 
 public class PanelPaint extends JPanel {
 
@@ -20,12 +21,13 @@ public class PanelPaint extends JPanel {
 	* 
 	*/
 	private static final long serialVersionUID = 1L;
-	public ArrayList<Shapes> shapes = new ArrayList<>();
+	public static ArrayList<Shapes> shapes = new ArrayList<>();
 	// boolean result=false;
 	public Point startDrag, endDrag;
 	private Shapes shape;
 	private User userasli;
 	static UserEntityManager uem = new UserEntityManager();
+	private static double scale=0;
 
 	public void loadShapeFromDB() throws SQLException {
 		shapes = uem.loadShapes();
@@ -48,7 +50,33 @@ public class PanelPaint extends JPanel {
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				if (PaintMain.name != null && PaintMain.color != null) {
+			repaint();
+				if(PaintMain.flagzoomin==true )
+				{
+					if(scale<0)
+						scale*=-1;
+					else
+						scale+=0.04;
+					for (Shapes shapes2 : shapes) {
+						shapes2.resize(scale);
+						repaint();
+					}
+						
+				}
+				if(PaintMain.flagzoomout==true)
+				{
+					if(scale>0)
+						scale *=-1;
+					else
+						scale -=0.03;
+					scale -=0.05;
+					for (Shapes shapes2 : shapes) {
+						shapes2.resize(scale);
+						repaint();
+					}
+					PaintMain.flagzoomin=false;
+				}
+				else if (PaintMain.name != null && PaintMain.color != null) {
 					startDrag = new Point(e.getX(), e.getY());
 					endDrag = startDrag;
 					repaint();
@@ -59,42 +87,82 @@ public class PanelPaint extends JPanel {
 
 							boolean result = shapes2.contains(e.getPoint());
 							if (result == true) {
-								shapes2.setColor(PaintMain.color);
+								if (PaintMain.flagdelete == false) {
+									shapes2.setColor(PaintMain.color);
 
-								try {
-									uem.updateShape(shapes2);
-									repaint();
-									continue;
-								} catch (SQLException e1) {
-									e1.printStackTrace();
+									try {
+										uem.updateShape(shapes2);
+										repaint();
+
+									} catch (SQLException e1) {
+										e1.printStackTrace();
+									}
+								} else if (PaintMain.flagdelete == true) {
+									try {
+										shapes.remove(shapes2);
+										uem.deleteShape(shapes2);
+										repaint();
+									} catch (SQLException e1) {
+										e1.printStackTrace();
+									}
+									break;
 								}
-
+								continue;
 							}
+
 						} else if (shapes2 instanceof Circle) {
 							boolean result = shapes2.contains(e.getPoint());
 							if (result == true) {
-								shapes2.setColor(PaintMain.color);
-								try {
-									uem.updateShape(shapes2);
-									repaint();
-									continue;
-								} catch (SQLException ex) {
-									ex.printStackTrace();
+								if (PaintMain.flagdelete == false) {
+									shapes2.setColor(PaintMain.color);
+									try {
+										uem.updateShape(shapes2);
+										repaint();
+
+									} catch (SQLException ex) {
+										ex.printStackTrace();
+									}
 								}
+								if (PaintMain.flagdelete == true) {
+
+									try {
+										shapes.remove(shapes2);
+										uem.deleteShape(shapes2);
+									} catch (SQLException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
+									repaint();
+									break;
+								}
+								
+								continue;
 							}
 
 						} else if (shapes2 instanceof Line) {
 							boolean result = shapes2.contains(e.getPoint());
 							if (result == true) {
-								shapes2.setColor(PaintMain.color);
-								try {
-									uem.updateShape(shapes2);
-									repaint();
-									continue;
-								} catch (SQLException ex) {
-									ex.printStackTrace();
-								}
+								if (PaintMain.flagdelete == false) {
+									shapes2.setColor(PaintMain.color);
+									try {
+										uem.updateShape(shapes2);
+										repaint();
 
+									} catch (SQLException ex) {
+										ex.printStackTrace();
+									}
+								} else if (PaintMain.flagdelete == true) {
+									try {
+										shapes.remove(shapes2);
+										uem.deleteShape(shapes2);
+									} catch (SQLException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
+									repaint();
+									break;
+								}
+								continue;
 							}
 
 						}
@@ -128,15 +196,26 @@ public class PanelPaint extends JPanel {
 				}
 			}
 		});
+		if (PaintMain.flagdelete == true) {
+
+			uem.deleteShapes();
+			shapes = uem.loadShapes();
+			repaint();
+
+		}
+	}
+
+	public static void deleteAlllShape() throws SQLException {
+		uem.deleteShapes();
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		super.paintComponent(g);
+		for (Shapes s : shapes)
+			s.draw(g);
 
-			for (Shapes s : shapes)
-				s.draw(g);
 		// PishNamayesh
 		if (startDrag != null && endDrag != null) {
 			g2.setPaint(Color.LIGHT_GRAY);
@@ -169,7 +248,4 @@ public class PanelPaint extends JPanel {
 		return (new Ellipse2D.Double(cX, cY, 2 * radius, 2 * radius));
 	}
 
-	public static void deleteAlllShape() throws SQLException {
-		uem.deleteShapes();
-	}
 }

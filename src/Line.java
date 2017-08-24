@@ -23,4 +23,10 @@ public class Line extends Shapes {
 	boolean contains(Point point) {
 		 return new Line2D.Double(startDrag, endDrag).ptLineDist(point) <=.8;
 	}
+
+	@Override
+	void resize(double scale) {
+		
+		
+	}
 }

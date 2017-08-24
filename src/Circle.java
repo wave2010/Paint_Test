@@ -29,6 +29,12 @@ public class Circle extends Shapes {
 		int cy = (int) Math.pow((p.y - startDrag.y), 2);
 		int d = (int) Math.sqrt(cx + cy);
 		return (d == radius || d == radius - 2 || d == radius - 1);
-
 	}
+
+	@Override
+	void resize(double scale) {
+		// TODO Auto-generated method stub	
+		radius +=radius * scale;
+	}
+	
 }

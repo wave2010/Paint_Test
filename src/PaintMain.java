@@ -24,6 +24,10 @@ public class PaintMain extends JFrame {
 	public JRadioButton rdbtnGreen;
 	public JRadioButton rdbtnRed;
 	static User userlogin;
+	public static boolean flagdelete=false;	
+	public static boolean flagzoomin=false;	
+	public static boolean flagzoomout=false;	
+	public static int scale=1;
 
 	/**
 	 * Launch the application.
@@ -48,14 +52,14 @@ public class PaintMain extends JFrame {
 	 * @param userloginn
 	 * @throws SQLException
 	 */
-	public PaintMain(User userloginn) throws SQLException {
+	public PaintMain(final User userloginn) throws SQLException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 594, 478);
 		contentPane = new JPanel();
 		setContentPane(contentPane);
 
 		contentPane.setLayout(null);
-		PanelPaint panelpaint = new PanelPaint(userloginn);
+		 PanelPaint panelpaint = new PanelPaint(userloginn);
 		panelpaint.setBounds(10, 11, 436, 418);
 		panelpaint.setBackground(Color.WHITE);
 		contentPane.add(panelpaint);
@@ -127,24 +131,49 @@ public class PaintMain extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				//color=Color.MAGENTA;
 				name=null;
+				flagdelete=false;
+				flagzoomin=false;
+				flagzoomout=false;
 			}
 		});
 		btnselect.setBounds(452, 216, 113, 23);
 		contentPane.add(btnselect);
 		
 		JButton btnZoomIn = new JButton("Zoom In");
+		btnZoomIn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				flagzoomin=true;
+				name=null;
+				flagdelete=false;
+				flagzoomout=false;
+			}
+		});
 		btnZoomIn.setBounds(452, 256, 113, 23);
 		contentPane.add(btnZoomIn);
 		
 		JButton btnZoomOut = new JButton("Zoom Out");
+		btnZoomOut.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				flagzoomout=true;
+				flagzoomin=false;
+				name=null;
+				flagdelete=false;
+				
+			}
+		});
 		btnZoomOut.setBounds(452, 280, 113, 23);
 		contentPane.add(btnZoomOut);
 		
 		JButton btnD = new JButton("Delete All ");
 		btnD.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+			
 				try {
+				//	flagdelete=true;
+					name=null;
+					color=null;
 					uem.deleteShapes();
+					PanelPaint panelpaint2 = new PanelPaint(userloginn);
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -155,6 +184,14 @@ public class PaintMain extends JFrame {
 		contentPane.add(btnD);
 		
 		JButton btnDeleteShape = new JButton("Delete Shape");
+		btnDeleteShape.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				name=null;
+				flagdelete=true;
+				flagzoomin=false;
+				flagzoomout=false;
+			}
+		});
 		btnDeleteShape.setBounds(452, 327, 113, 23);
 		contentPane.add(btnDeleteShape);
 		

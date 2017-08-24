@@ -50,4 +50,6 @@ public abstract class Shapes {
 	public abstract void draw(Graphics g);
 
 	abstract boolean contains(Point point);
+	abstract void resize(double scale);
+	
 }

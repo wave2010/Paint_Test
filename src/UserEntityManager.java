@@ -109,6 +109,46 @@ public class UserEntityManager {
 		}
 
 	}
+	
+	
+	public void deleteShape(Shapes shape) throws SQLException {
+		if (shape instanceof Line) {
+			Line l = (Line) shape;
+			con = ConnectionManager.getConnection();
+			stmt = con.createStatement();
+			stmt.executeUpdate("Delete From line WHERE X1="
+			          + l.startDrag.x + " AND Y1=" + l.startDrag.y + " AND x2=" + l.endDrag.x + " AND y2="
+			          + l.endDrag.y + " AND user='" + shape.getUser().getUsername() + "';");
+			// test
+			System.out.println("Delete From line WHERE X1="
+			          + l.startDrag.x + " AND Y1=" + l.startDrag.y + " AND x2=" + l.endDrag.x + " AND y2="
+			          + l.endDrag.y + " AND user='" + shape.getUser().getUsername() + "';");
+
+		} else if (shape instanceof Circle) {
+			Circle c = (Circle) shape;
+			stmt.executeUpdate("Delete From circle WHERE X1="
+          + c.startDrag.x + " AND Y1=" + c.startDrag.y + " AND hight=" + c.endDrag.x + " AND width="
+          + c.endDrag.y + " AND user='" + shape.getUser().getUsername() + "';");
+
+			// test
+			System.out.println("Delete From circle WHERE X1="
+			          + c.startDrag.x + " AND Y1=" + c.startDrag.y + " AND hight=" + c.endDrag.x + " AND width="
+			          + c.endDrag.y + " AND user='" + shape.getUser().getUsername() + "';");
+
+		} else if (shape instanceof Rectangle) {
+			Rectangle r = (Rectangle) shape;
+			stmt.executeUpdate("Delete From rectangle WHERE X1="
+			          + r.startDrag.x + " AND Y1=" + r.startDrag.y + " AND x2=" + r.endDrag.x + " AND y2="
+			          + r.endDrag.y + " AND user='" + shape.getUser().getUsername() + "';");
+
+			// test
+			System.out.println("Delete From rectangle WHERE X1="
+			          + r.startDrag.x + " AND Y1=" + r.startDrag.y + " AND x2=" + r.endDrag.x + " AND y2="
+			          + r.endDrag.y + " AND user='" + shape.getUser().getUsername() + "';");
+
+		}
+
+	}
 	public void deleteShapes() throws SQLException {
 		
 			con = ConnectionManager.getConnection();
