@@ -74,7 +74,7 @@ public class Login extends JFrame {
 
 			}
 		});
-		btnButton.setBounds(95, 98, 89, 23);
+		btnButton.setBounds(20, 100, 89, 23);
 		contentPane.add(btnButton);
 
 		JLabel lblUser = new JLabel("Username :");
@@ -84,5 +84,9 @@ public class Login extends JFrame {
 		JLabel lblPassword = new JLabel("Password :");
 		lblPassword.setBounds(10, 68, 75, 21);
 		contentPane.add(lblPassword);
+		
+		JButton btnSignup = new JButton("SignUp");
+		btnSignup.setBounds(145, 100, 89, 23);
+		contentPane.add(btnSignup);
 	}
 }

@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -6,6 +7,8 @@ import java.awt.Shape;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -15,11 +18,13 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.RepaintManager;
 
-public class PanelPaint extends JPanel {
+public class PanelPaint extends JPanel{
 
 	/**
 	* 
 	*/
+	private static int prevN = 0;
+	private Dimension preferredSize = new Dimension(425,410);  
 	private static final long serialVersionUID = 1L;
 	public static ArrayList<Shapes> shapes = new ArrayList<>();
 	// boolean result=false;
@@ -36,7 +41,7 @@ public class PanelPaint extends JPanel {
 	PanelPaint(User user) throws SQLException {
 
 		userasli = user;
-		setBounds(10, 11, 374, 293);
+		setBounds(10, 11, 432, 418);
 		loadShapeFromDB();
 		addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
@@ -51,32 +56,9 @@ public class PanelPaint extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e) {
 			repaint();
-				if(PaintMain.flagzoomin==true )
-				{
-					if(scale<0)
-						scale*=-1;
-					else
-						scale+=0.04;
-					for (Shapes shapes2 : shapes) {
-						shapes2.resize(scale);
-						repaint();
-					}
-						
-				}
-				if(PaintMain.flagzoomout==true)
-				{
-					if(scale>0)
-						scale *=-1;
-					else
-						scale -=0.03;
-					scale -=0.05;
-					for (Shapes shapes2 : shapes) {
-						shapes2.resize(scale);
-						repaint();
-					}
-					PaintMain.flagzoomin=false;
-				}
-				else if (PaintMain.name != null && PaintMain.color != null) {
+				
+				
+				 if (PaintMain.name != null && PaintMain.color != null) {
 					startDrag = new Point(e.getX(), e.getY());
 					endDrag = startDrag;
 					repaint();
@@ -196,12 +178,16 @@ public class PanelPaint extends JPanel {
 				}
 			}
 		});
+		addMouseWheelListener(new MouseWheelListener() {
+	        @Override
+	        public void mouseWheelMoved(MouseWheelEvent e) {
+	            updatePreferredSize(e.getWheelRotation(), e.getPoint());
+	        }
+	    });
 		if (PaintMain.flagdelete == true) {
-
 			uem.deleteShapes();
 			shapes = uem.loadShapes();
 			repaint();
-
 		}
 	}
 
@@ -213,8 +199,10 @@ public class PanelPaint extends JPanel {
 	protected void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		super.paintComponent(g);
+		 int w = getWidth();
+		 int h = getHeight();
 		for (Shapes s : shapes)
-			s.draw(g);
+			s.draw(g,w,h);
 
 		// PishNamayesh
 		if (startDrag != null && endDrag != null) {
@@ -246,6 +234,34 @@ public class PanelPaint extends JPanel {
 		cX = startDrag.x - radius;
 		cY = startDrag.y - radius;
 		return (new Ellipse2D.Double(cX, cY, 2 * radius, 2 * radius));
+	}
+	private void updatePreferredSize(int n, Point p) {
+
+	    if(n == 0)              // ideally getWheelRotation() should never return 0. 
+	        n = -1 * prevN;     // but sometimes it returns 0 during changing of zoom 
+	                            // direction. so if we get 0 just reverse the direction.
+
+	    double d = (double) n * 1.08;
+	    d = (n > 0) ? 1 / d : -d;
+
+	    int w = (int) (getWidth() * d);
+	    int h = (int) (getHeight() * d);
+	    preferredSize.setSize(w, h);
+
+	    int offX = (int)(p.x * d) - p.x;
+	    int offY = (int)(p.y * d) - p.y;
+	    getParent().setLocation(getParent().getLocation().x-offX,getParent().getLocation().y-offY); 
+	    //in the original code, zoomPanel is being shifted. here we are shifting containerPanel
+
+	    getParent().doLayout();             // do the layout for containerPanel
+	    getParent().getParent().doLayout(); // do the layout for jf (JFrame)
+
+	    prevN = n;
+	}
+
+	@Override
+	public Dimension getPreferredSize() {
+	    return preferredSize;
 	}
 
 }

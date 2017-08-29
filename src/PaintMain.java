@@ -5,6 +5,8 @@ import javax.swing.JPanel;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
@@ -59,10 +61,8 @@ public class PaintMain extends JFrame {
 		setContentPane(contentPane);
 
 		contentPane.setLayout(null);
-		 PanelPaint panelpaint = new PanelPaint(userloginn);
-		panelpaint.setBounds(10, 11, 436, 418);
-		panelpaint.setBackground(Color.WHITE);
-		contentPane.add(panelpaint);
+	//	contentPane.add(new JScrollPane(panelpaint));
+		//contentPane.setVisible(true);
 
 		final JButton btnRectangle = new JButton("Rectangle");
 		btnRectangle.addActionListener(new ActionListener() {
@@ -194,6 +194,16 @@ public class PaintMain extends JFrame {
 		});
 		btnDeleteShape.setBounds(452, 327, 113, 23);
 		contentPane.add(btnDeleteShape);
+		
+		JPanel panel = new JPanel();
+		panel.setBounds(10, 11, 432, 418);
+		contentPane.add(panel);
+		
+			PanelPaint panelpaint = new PanelPaint(userloginn);
+			//panel.add(panelpaint);
+			JScrollPane scrollPane = new JScrollPane(panelpaint);
+			panel.add(scrollPane);
+			panelpaint.setBackground(Color.WHITE);
 		
 		
 		class VoteActionListener implements ActionListener {

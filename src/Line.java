@@ -13,7 +13,7 @@ public class Line extends Shapes {
 	}
 
 	@Override
-	public void draw(Graphics g) {
+	public void draw(Graphics g,int w,int h) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(color);
 		g2d.drawLine(startDrag.x, startDrag.y, endDrag.x, endDrag.y);

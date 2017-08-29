@@ -14,10 +14,11 @@ public class Rectangle extends Shapes {
 	}
 
 	@Override
-	public void draw(Graphics g) {
+	public void draw(Graphics g,int w,int h) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(color);
-		g2d.drawRect(Math.min(startDrag.x, endDrag.x), Math.min(startDrag.y, endDrag.y),
+		
+		g2d.drawRect(Math.min(startDrag.x, endDrag.x), Math.min(startDrag.y, endDrag.y)*1,
 				width,height);
 	}
 
