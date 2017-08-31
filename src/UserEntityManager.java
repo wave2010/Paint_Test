@@ -242,5 +242,21 @@ public class UserEntityManager {
 			e.printStackTrace();
 		}
 	}
+	public void  addUser(User user) {
+		
+try{
+		
+		con = ConnectionManager.getConnection();
+		stmt = con.createStatement();
+		 stmt.executeUpdate("insert into user (username, password) values ('" + user.getUsername() + "', '" + user.getPassword() + "');");
+		
+			
+		}catch(SQLException e){
+			System.out.println(e.getMessage());
+			
+		}
+
+	
+	}
 
 }

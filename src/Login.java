@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 
 public class Login extends JFrame {
+	UserEntityManager dbms=new UserEntityManager();
 
 	/**
 	 * 
@@ -86,6 +87,13 @@ public class Login extends JFrame {
 		contentPane.add(lblPassword);
 		
 		JButton btnSignup = new JButton("SignUp");
+		btnSignup.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Login.this.setVisible(false);
+				Register.enterreg();
+				
+			}
+		});
 		btnSignup.setBounds(145, 100, 89, 23);
 		contentPane.add(btnSignup);
 	}
