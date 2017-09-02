@@ -14,7 +14,7 @@ public class Rectangle extends Shapes {
 	}
 
 	@Override
-	public void draw(Graphics g,int w,int h) {
+	public void draw(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(color);
 		

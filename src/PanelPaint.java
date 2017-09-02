@@ -12,19 +12,18 @@ import java.awt.event.MouseWheelListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
-import javax.swing.RepaintManager;
+
 
 public class PanelPaint extends JPanel{
 
 	/**
 	* 
 	*/
-	private static int prevN = 0;
-	private Dimension preferredSize = new Dimension(425,410);  
 	private static final long serialVersionUID = 1L;
 	public static ArrayList<Shapes> shapes = new ArrayList<>();
 	// boolean result=false;
@@ -32,20 +31,26 @@ public class PanelPaint extends JPanel{
 	private Shapes shape;
 	private User userasli;
 	static UserEntityManager uem = new UserEntityManager();
-	private static double scale=0;
-
+    public static double zoomin = 0.1;  // zoom factor
+    public static  double zoomout=0.2;
+    public static double zoomfactor=1;
+    public static int zoomflag=0;
+    private double scale=0.2;
+    
 	public void loadShapeFromDB() throws SQLException {
 		shapes = uem.loadShapes();
 	}
 
-	PanelPaint(User user) throws SQLException {
+	PanelPaint(User user) throws SQLException, IOException {
 
 		userasli = user;
-		setBounds(10, 11, 432, 418);
 		loadShapeFromDB();
+	      
 		addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseDragged(MouseEvent e) {
+				zoomfactor=1;
+				repaint();
 				if (PaintMain.name != null && PaintMain.color != null) {
 					endDrag = new Point(e.getX(), e.getY());
 					repaint();
@@ -111,7 +116,7 @@ public class PanelPaint extends JPanel{
 										shapes.remove(shapes2);
 										uem.deleteShape(shapes2);
 									} catch (SQLException e1) {
-										// TODO Auto-generated catch block
+				
 										e1.printStackTrace();
 									}
 									repaint();
@@ -138,7 +143,6 @@ public class PanelPaint extends JPanel{
 										shapes.remove(shapes2);
 										uem.deleteShape(shapes2);
 									} catch (SQLException e1) {
-										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
 									repaint();
@@ -181,7 +185,15 @@ public class PanelPaint extends JPanel{
 		addMouseWheelListener(new MouseWheelListener() {
 	        @Override
 	        public void mouseWheelMoved(MouseWheelEvent e) {
-	            updatePreferredSize(e.getWheelRotation(), e.getPoint());
+	           // updatePreferredSize(e.getWheelRotation(), e.getPoint());
+	        	/* int notches = e.getWheelRotation();
+	                double temp = zoom - (notches * 0.2);
+	                // minimum zoom factor is 1.0
+	                temp = Math.max(temp, 1.0);
+	                if (temp != zoom) {
+	                    zoom = temp;
+	                    resizeImage();
+	                }*/
 	        }
 	    });
 		if (PaintMain.flagdelete == true) {
@@ -198,12 +210,17 @@ public class PanelPaint extends JPanel{
 	@Override
 	protected void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
-		super.paintComponent(g);
-		 int w = getWidth();
-		 int h = getHeight();
+		    super.paintComponent(g);
+			g2.scale(zoomfactor,zoomfactor);	  
 		for (Shapes s : shapes)
-			s.draw(g,w,h);
+			s.draw(g);
+		
+		
 
+	
+		
+		
+		
 		// PishNamayesh
 		if (startDrag != null && endDrag != null) {
 			g2.setPaint(Color.LIGHT_GRAY);
@@ -216,6 +233,7 @@ public class PanelPaint extends JPanel{
 				shapejava = makeRectangle(startDrag.x, startDrag.y, endDrag.x, endDrag.y);
 			}
 			g2.draw(shapejava);
+			
 		}
 	}
 
@@ -235,33 +253,19 @@ public class PanelPaint extends JPanel{
 		cY = startDrag.y - radius;
 		return (new Ellipse2D.Double(cX, cY, 2 * radius, 2 * radius));
 	}
-	private void updatePreferredSize(int n, Point p) {
-
-	    if(n == 0)              // ideally getWheelRotation() should never return 0. 
-	        n = -1 * prevN;     // but sometimes it returns 0 during changing of zoom 
-	                            // direction. so if we get 0 just reverse the direction.
-
-	    double d = (double) n * 1.08;
-	    d = (n > 0) ? 1 / d : -d;
-
-	    int w = (int) (getWidth() * d);
-	    int h = (int) (getHeight() * d);
-	    preferredSize.setSize(w, h);
-
-	    int offX = (int)(p.x * d) - p.x;
-	    int offY = (int)(p.y * d) - p.y;
-	    getParent().setLocation(getParent().getLocation().x-offX,getParent().getLocation().y-offY); 
-	    //in the original code, zoomPanel is being shifted. here we are shifting containerPanel
-
-	    getParent().doLayout();             // do the layout for containerPanel
-	    getParent().getParent().doLayout(); // do the layout for jf (JFrame)
-
-	    prevN = n;
-	}
-
-	@Override
 	public Dimension getPreferredSize() {
-	    return preferredSize;
-	}
+	    return new Dimension((int) (428 * zoomfactor), (int) (408 * zoomfactor));
+	  }
+	public void zoomIn() {
+	    zoomfactor = Math.min(2,scale + zoomfactor);
+	    revalidate();
+	    repaint();
+	  }
+
+	  public void zoomOut() {
+	    zoomfactor = Math.max(1,zoomfactor - scale);
+	    revalidate();
+	    repaint();
+	  }
 
 }

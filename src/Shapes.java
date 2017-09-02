@@ -47,7 +47,7 @@ public abstract class Shapes {
 		this.color = color;
 	}
 
-	public abstract void draw(Graphics g,int w,int h);
+	public abstract void draw(Graphics g);
 
 	abstract boolean contains(Point point);
 	abstract void resize(double scale);

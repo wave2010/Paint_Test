@@ -1,13 +1,24 @@
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.EventQueue;
+import java.awt.Graphics2D;
+import java.awt.GridBagLayout;
+
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
@@ -26,10 +37,9 @@ public class PaintMain extends JFrame {
 	public JRadioButton rdbtnGreen;
 	public JRadioButton rdbtnRed;
 	static User userlogin;
-	public static boolean flagdelete=false;	
-	public static boolean flagzoomin=false;	
-	public static boolean flagzoomout=false;	
-	public static int scale=1;
+	public static boolean flagdelete = false;
+	public static int scale = 1;
+	static public BufferedImage image;
 
 	/**
 	 * Launch the application.
@@ -53,16 +63,18 @@ public class PaintMain extends JFrame {
 	 * 
 	 * @param userloginn
 	 * @throws SQLException
+	 * @throws IOException 
 	 */
-	public PaintMain(final User userloginn) throws SQLException {
+	public PaintMain(final User userloginn) throws SQLException, IOException {
+		setResizable(false);
+		setAutoRequestFocus(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 594, 478);
+		setBounds(100, 100, 574, 463);
 		contentPane = new JPanel();
 		setContentPane(contentPane);
-
-		contentPane.setLayout(null);
-	//	contentPane.add(new JScrollPane(panelpaint));
-		//contentPane.setVisible(true);
+	    contentPane.setLayout(null);
+		final PanelPaint panelpaint = new PanelPaint(userloginn);
+		
 
 		final JButton btnRectangle = new JButton("Rectangle");
 		btnRectangle.addActionListener(new ActionListener() {
@@ -77,6 +89,9 @@ public class PaintMain extends JFrame {
 		btnLine.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				name = btnLine.getText();
+
+				 
+				 
 			}
 		});
 		btnLine.setBounds(452, 45, 113, 23);
@@ -86,6 +101,8 @@ public class PaintMain extends JFrame {
 		btnCircle.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				name = btnCircle.getText();
+
+				
 			}
 		});
 		btnCircle.setBounds(452, 79, 113, 23);
@@ -123,89 +140,100 @@ public class PaintMain extends JFrame {
 				System.exit(0);
 			}
 		});
-		btnsave.setBounds(452, 406, 113, 23);
+		btnsave.setBounds(452, 401, 113, 23);
 		contentPane.add(btnsave);
 
 		JButton btnselect = new JButton("Select");
 		btnselect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//color=Color.MAGENTA;
-				name=null;
-				flagdelete=false;
-				flagzoomin=false;
-				flagzoomout=false;
+				// color=Color.MAGENTA;
+				name = null;
+				flagdelete = false;
 			}
 		});
 		btnselect.setBounds(452, 216, 113, 23);
 		contentPane.add(btnselect);
-		
+
 		JButton btnZoomIn = new JButton("Zoom In");
 		btnZoomIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				flagzoomin=true;
-				name=null;
-				flagdelete=false;
-				flagzoomout=false;
+
+				panelpaint.zoomIn();
 			}
 		});
 		btnZoomIn.setBounds(452, 256, 113, 23);
 		contentPane.add(btnZoomIn);
-		
+
 		JButton btnZoomOut = new JButton("Zoom Out");
 		btnZoomOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				flagzoomout=true;
-				flagzoomin=false;
-				name=null;
-				flagdelete=false;
-				
+				panelpaint.zoomOut();
 			}
 		});
 		btnZoomOut.setBounds(452, 280, 113, 23);
 		contentPane.add(btnZoomOut);
-		
+
 		JButton btnD = new JButton("Delete All ");
 		btnD.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-			
+
 				try {
-				//	flagdelete=true;
-					name=null;
-					color=null;
+					// flagdelete=true;
+					name = null;
+					color = null;
 					uem.deleteShapes();
 					PanelPaint panelpaint2 = new PanelPaint(userloginn);
+					
 				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		});
-		btnD.setBounds(452, 353, 113, 23);
+		btnD.setBounds(452, 337, 113, 23);
 		contentPane.add(btnD);
-		
+
 		JButton btnDeleteShape = new JButton("Delete Shape");
 		btnDeleteShape.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				name=null;
-				flagdelete=true;
-				flagzoomin=false;
-				flagzoomout=false;
+				name = null;
+				flagdelete = true;
+
 			}
 		});
-		btnDeleteShape.setBounds(452, 327, 113, 23);
+		btnDeleteShape.setBounds(452, 314, 113, 23);
 		contentPane.add(btnDeleteShape);
+
+		JButton btnimage = new JButton("Save Image");
+		btnimage.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Container c = panelpaint.getParent();
+				BufferedImage im = new BufferedImage(c.getWidth(), c.getHeight(), BufferedImage.TYPE_INT_ARGB);
+				c.paint(im.getGraphics());
+				try {
+					ImageIO.write(im, "PNG", new File("shot.png"));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+			}
+		});
+		btnimage.setBounds(452, 371, 113, 23);
+		contentPane.add(btnimage);
 		
 		JPanel panel = new JPanel();
 		panel.setBounds(10, 11, 432, 418);
+	
+		panelpaint.setBackground(Color.WHITE);
+		JScrollPane scroll=new JScrollPane(panelpaint);
+		
+		panel.add(scroll);
 		contentPane.add(panel);
-		
-			PanelPaint panelpaint = new PanelPaint(userloginn);
-			//panel.add(panelpaint);
-			JScrollPane scrollPane = new JScrollPane(panelpaint);
-			panel.add(scrollPane);
-			panelpaint.setBackground(Color.WHITE);
-		
-		
+		contentPane.setVisible(true);
+
 		class VoteActionListener implements ActionListener {
 			public void actionPerformed(ActionEvent ex) {
 				String choice = bG.getSelection().getActionCommand();
