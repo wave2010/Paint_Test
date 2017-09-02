@@ -20,6 +20,10 @@ public class Register extends JFrame {
 	private JTextField textField;
 	private JTextField textField_1;
 	private UserEntityManager dbms = new UserEntityManager();
+	private JTextField text_Name;
+	private JTextField text_Family;
+	private JLabel lblName;
+	private JLabel lblFamily;
 	/**
 	 * Launch the application.
 	 */
@@ -41,7 +45,7 @@ public class Register extends JFrame {
 	 */
 	public Register() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 311, 171);
+		setBounds(100, 100, 298, 264);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -52,7 +56,7 @@ public class Register extends JFrame {
 		contentPane.add(lblUsername);
 		
 		textField = new JTextField();
-		textField.setBounds(117, 27, 155, 20);
+		textField.setBounds(101, 27, 155, 20);
 		contentPane.add(textField);
 		textField.setColumns(10);
 		
@@ -61,14 +65,31 @@ public class Register extends JFrame {
 		contentPane.add(lblPassword);
 		
 		textField_1 = new JTextField();
-		textField_1.setBounds(117, 58, 155, 20);
+		textField_1.setBounds(101, 58, 155, 20);
 		contentPane.add(textField_1);
 		textField_1.setColumns(10);
+		text_Name = new JTextField();
+		text_Name.setBounds(101, 104, 155, 20);
+		contentPane.add(text_Name);
+		text_Name.setColumns(10);
+		
+		text_Family = new JTextField();
+		text_Family.setBounds(101, 135, 157, 20);
+		contentPane.add(text_Family);
+		text_Family.setColumns(10);
+		
+		lblName = new JLabel("name:");
+		lblName.setBounds(45, 107, 46, 14);
+		contentPane.add(lblName);
+		
+		lblFamily = new JLabel("family:");
+		lblFamily.setBounds(45, 138, 46, 14);
+		contentPane.add(lblFamily);
 		
 		JButton btnRegister = new JButton("register");
 		btnRegister.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				User user =new User(textField.getText(), textField_1.getText());
+				User user =new User(textField.getText(), textField_1.getText(),text_Name.getText(),text_Family.getText());
 				if(dbms.informationUser(user))
 					JOptionPane.showMessageDialog(null, "user exist");
 				else{
@@ -81,8 +102,10 @@ public class Register extends JFrame {
 					
 				}
 		});
-		btnRegister.setBounds(96, 98, 89, 23);
+		btnRegister.setBounds(112, 181, 119, 33);
 		contentPane.add(btnRegister);
+		
+		
 	}
 
 }

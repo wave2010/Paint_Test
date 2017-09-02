@@ -248,7 +248,7 @@ try{
 		
 		con = ConnectionManager.getConnection();
 		stmt = con.createStatement();
-		 stmt.executeUpdate("insert into user (username, password) values ('" + user.getUsername() + "', '" + user.getPassword() + "');");
+		 stmt.executeUpdate("insert into user (username, password,name,family) values ('" + user.getUsername() + "', '" + user.getPassword() + "','"+user.getName()+"','"+user.getFamily()+"');");
 		
 			
 		}catch(SQLException e){
